@@ -13,8 +13,8 @@ class DetectionManager:
     def __init__(self):
         # Model path and Google Drive download link
         self.model_path = str(Path(__file__).resolve().parent.parent / "best.pt")
-        self.gdrive_id = "YOUR_FILE_ID_HERE"  # 👈 replace with your Google Drive file ID
-        self.gdrive_url = f"https://drive.google.com/uc?id={self.gdrive_id}"
+       
+        self.gdrive_url = f"https://drive.google.com/file/d/1JJjXbd8utzDzEHI3HekxG9gMj89sLcep/view?usp=drive_link"
 
         self.model = None
         self.class_names = {
