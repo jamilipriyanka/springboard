@@ -7,11 +7,15 @@ from typing import List, Dict, Tuple, Optional
 import os
 from pathlib import Path
 import streamlit as st
+import requests  # 👈 added
 
 class DetectionManager:
     def __init__(self):
+        # Model path and Google Drive download link
         self.model_path = str(Path(__file__).resolve().parent.parent / "best.pt")
- 
+        self.gdrive_id = "YOUR_FILE_ID_HERE"  # 👈 replace with your Google Drive file ID
+        self.gdrive_url = f"https://drive.google.com/uc?id={self.gdrive_id}"
+
         self.model = None
         self.class_names = {
             0: "Stones / Stone Pillars / Stone Structures",
@@ -25,13 +29,30 @@ class DetectionManager:
             2: (105, 105, 105),  # Dim gray for non-archaeological
             3: (184, 134, 11)    # Dark goldenrod for heritage sites
         }
+
+        # Download if needed and then load the model
+        self.ensure_model()
         self.load_model()
-    
+
+    def ensure_model(self):
+        """Download model from Google Drive if missing"""
+        if not os.path.exists(self.model_path):
+            try:
+                st.info("Downloading model file from Google Drive... please wait ⏳")
+                r = requests.get(self.gdrive_url, allow_redirects=True)
+                r.raise_for_status()
+                with open(self.model_path, 'wb') as f:
+                    f.write(r.content)
+                st.success("✅ Model downloaded successfully!")
+            except Exception as e:
+                st.error(f"❌ Failed to download model: {str(e)}")
+
     def load_model(self):
         """Load the YOLOv11 model"""
         try:
             if os.path.exists(self.model_path):
                 self.model = YOLO(self.model_path)
+                st.success("Model loaded successfully ✅")
                 return True
             else:
                 st.error(f"Model file not found at {self.model_path}")
@@ -39,6 +60,7 @@ class DetectionManager:
         except Exception as e:
             st.error(f"Error loading model: {str(e)}")
             return False
+
     
     def detect_objects(self, image: np.ndarray) -> List[Dict]:
         """Detect objects in a single image"""
