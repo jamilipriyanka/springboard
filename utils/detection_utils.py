@@ -14,7 +14,7 @@ class DetectionManager:
         # Model path and Google Drive download link
         self.model_path = str(Path(__file__).resolve().parent.parent / "best.pt")
        
-        self.gdrive_url = f"https://drive.google.com/file/d/1JJjXbd8utzDzEHI3HekxG9gMj89sLcep/view?usp=drive_link"
+        self.gdrive_url = f"https://drive.google.com/uc?id=1JJjXbd8utzDzEHI3HekxG9gMj89sLcep"
 
         self.model = None
         self.class_names = {
